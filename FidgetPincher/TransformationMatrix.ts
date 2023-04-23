@@ -59,4 +59,24 @@ export class TransformationMatrix {
     return new TransformationMatrix(c0, c3, c1, c4, c2, c5);
   }
 
+  toCSSMatrix() {
+    const { a, b, c, d, e, f } = this;
+    return `matrix(${a}, ${b}, ${c}, ${d}, ${e}, ${f})`;
+  }
+
+  decompose() {
+    // decompose the matrix into translate, rotate, scale
+    const { a, b, c, d, e, f } = this;
+    const translateX = e;
+    const translateY = f;
+    // ignore skew
+    const scale = Math.hypot(a, b);
+    const rotate = Math.atan2(b, a);
+    return { translateX, translateY, scale, rotate };
+  }
+
+  toCSSDecomposed() {
+    const { translateX, translateY, scale, rotate } = this.decompose();
+    return `translate(${translateX}px, ${translateY}px) rotate(${rotate}rad) scale(${scale})`;
+  }
 }

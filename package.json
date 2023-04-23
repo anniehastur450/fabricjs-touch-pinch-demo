@@ -6,6 +6,7 @@
     "serve": "parcel index.html"
   },
   "devDependencies": {
+    "nodemon": "^2.0.22",
     "parcel": "^2.8.3"
   }
 }

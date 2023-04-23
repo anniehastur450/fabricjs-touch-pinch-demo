@@ -1,9 +1,5 @@
 import { TransformationMatrix } from './TransformationMatrix';
-import { Impl, ImplPointer } from './core-impl';
-
-interface FidgetPincherOptions {
-  enableInertia: boolean;
-}
+import { FidgetPincherOptions, Impl, ImplPointer } from './core-impl';
 
 interface TouchElementOptions {
   onTransformed?: (transform: TransformationMatrix) => void;
@@ -22,7 +18,8 @@ interface TouchElementEvents {
 
 function defaultOptions(): FidgetPincherOptions {
   return {
-    enableInertia: true
+    enableInertia: true,
+    enableFidgetSpinInertia: true,
   }
 }
 
@@ -72,6 +69,18 @@ export class FidgetPincher {
 
   getTransform(): TransformationMatrix {
     return this.impl.transform;
+  }
+
+  setTransform(transform: TransformationMatrix) {
+    this.impl.transform = transform;
+    this.impl.notifyTransformed();
+  }
+
+  // call this function when browser default touch events should interrupt the operation
+  // e.g. page zoom, scroll, text selection, etc.
+  clearTouchPointers() {
+    this.pointerMap.clear();
+    this.impl.pointers = [];
   }
 
   private createEvents(element: HTMLElement): TouchElementEvents {

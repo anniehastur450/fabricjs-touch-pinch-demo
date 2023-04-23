@@ -1,8 +1,9 @@
 import { TransformationMatrix } from './TransformationMatrix';
-import { calculateAverageAngle, calculateAverageAngleDisplacement, calculateAverageDistance, calculateCentroid, calculatePinch } from './core-math';
+import { calculatePinch } from './core-math';
 
 export interface FidgetPincherOptions {
   enableInertia: boolean;
+  enableFidgetSpinInertia: boolean;
 }
 
 export class ImplPointer {
@@ -32,7 +33,7 @@ export class ImplPointer {
       this.y = y;
       this.t = t;
       const nextPoints = this.owner.pointers.map(p => ({ x: p.x, y: p.y }));
-      const { dx, dy, scale, rotation, prevCentroid, nextCentroid } = calculatePinch(prevPoints, nextPoints);
+      const { dx, dy, scale, rotation, prevCentroid } = calculatePinch(prevPoints, nextPoints);
       const actions = [
         TransformationMatrix.translation(-prevCentroid.x, -prevCentroid.y),
         TransformationMatrix.rotation(rotation),

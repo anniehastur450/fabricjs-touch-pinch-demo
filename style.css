@@ -6,8 +6,18 @@ h1, h2 {
   font-family: Lato;
 }
 
+.font-inter {
+  font-family: Inter, sans-serif;
+}
+
 .canvasbg {
   /* https://www.transparenttextures.com/subtle-grey.html */
   background-color: #210000;
   background-image: url("./images/subtle-grey.png");
+}
+
+.cssbg {
+  /* https://www.transparenttextures.com/subtle-grey.html */
+  background-color: #117000;
+  background-image: url("/images/subtle-grey.png");
 }
