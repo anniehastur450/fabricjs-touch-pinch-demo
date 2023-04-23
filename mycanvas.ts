@@ -18,8 +18,10 @@ function repaint() {
   // apply transform
   ctx.save();
   ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  ctx.translate(containerW / 2, containerH / 2);
   const { a, b, c, d, e, f } = fidgetPincher.getTransform();
   ctx.transform(a, b, c, d, e, f);
+  ctx.translate(-containerW / 2, -containerH / 2);
   // centering
   ctx.drawImage(img,
     (containerW - fitW) / 2,
