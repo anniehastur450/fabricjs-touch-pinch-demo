@@ -9,6 +9,13 @@ const myCanvas = document.getElementById('mycanvas') as HTMLCanvasElement;
 const ctx = myCanvas.getContext('2d')!;
 const fidgetPincher = new FidgetPincher();
 
+function diagnosticPrint() {
+  const css1 = document.getElementById('details-css1') as HTMLDivElement;
+  const css2 = document.getElementById('details-css2') as HTMLDivElement;
+  css1.innerText = `transform: ${fidgetPincher.getTransform().toCSSMatrix()};`;
+  css2.innerText = `transform: ${fidgetPincher.getTransform().toCSSDecomposed()};`;
+}
+
 function repaint() {
   ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
   const containerW = myCanvas.width / window.devicePixelRatio;
@@ -31,6 +38,8 @@ function repaint() {
   );
   // restore state
   ctx.restore();
+  // print diagnostic info to page
+  diagnosticPrint();
 }
 
 async function onInit() {

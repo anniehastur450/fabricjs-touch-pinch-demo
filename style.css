@@ -6,6 +6,10 @@ h1, h2 {
   font-family: Lato;
 }
 
+.font-inter {
+  font-family: Inter, sans-serif;
+}
+
 .canvasbg {
   /* https://www.transparenttextures.com/subtle-grey.html */
   background-color: #210000;
