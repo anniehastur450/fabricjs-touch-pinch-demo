@@ -1,5 +1,5 @@
 import { TransformationMatrix } from './TransformationMatrix';
-import { calculateAverageAngle, calculateAverageAngleDisplacement, calculateAverageDistance, calculateCentroid, calculatePinch } from './core-math';
+import { calculatePinch } from './core-math';
 
 export interface FidgetPincherOptions {
   enableInertia: boolean;
