@@ -1,3 +1,38 @@
-<div id="app"></div>
+<!DOCTYPE html>
+<html>
 
-<script type="module" src="index.ts"></script>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Fidget pincher demo</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <script src="https://cdn.jsdelivr.net/npm/@unocss/runtime"></script>
+</head>
+
+<body>
+  <div id="app"></div>
+
+  <div class="sm:flex overflow-hidden">
+    <div class="sm:w-1/2">
+      <div
+        class="b b-solid b-black overflow-hidden
+          w-full aspect-[3/4]
+          sm:aspect-[2/1]
+        "
+        id="mycanvas-container"
+      >
+        <canvas
+          class="canvasbg"
+          id="mycanvas"
+        ></canvas>
+      </div>
+
+    </div>
+    <div class="grow-1"></div>
+  </div>
+
+
+  <script type="module" src="index.ts"></script>
+</body>
+
+</html>

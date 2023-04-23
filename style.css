@@ -1,3 +1,13 @@
+* {
+  box-sizing: border-box;
+}
+
 h1, h2 {
   font-family: Lato;
+}
+
+.canvasbg {
+  /* https://www.transparenttextures.com/subtle-grey.html */
+  background-color: #210000;
+  background-image: url("/images/subtle-grey.png");
 }
