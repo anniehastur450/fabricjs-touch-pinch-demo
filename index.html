@@ -36,13 +36,19 @@
 
       <!-- css -->
       <div
-        class="b b-solid b-amber-700 overflow-hidden
+        class="cssbg b b-solid b-amber-700 overflow-hidden
           w-full aspect-[3/4]
           sm:aspect-[2/1]
         "
         style="display: none;"
         id="mycss-container"
       >
+        <div
+          class="w-full h-full flex justify-center items-center pointer-events-none"
+          id="mycss"
+          >
+          <img src="./images/cute-rabbit-holding-carrot.avif" alt="" style="width: var(--img-width);">
+        </div>
       </div>
 
       <!-- fabricjs -->
@@ -103,6 +109,22 @@
             class="cursor-pointer bg-white hover:bg-indigo-50 px-2 py-1 rounded b-2 b-solid b-slate-500"
             id="select-myfabric"
           >Fabricjs</button>
+        </div>
+
+        <div class="mt-2" id="select-mycss-style-container">
+          <div class="text-xs text-gray-500 mb-1">
+            Select a style
+          </div>
+          <div class="flex gap-2">
+            <button
+              class="cursor-pointer bg-white hover:bg-indigo-50 px-2 py-1 rounded b-2 b-solid b-slate-500"
+              id="select-mycss-style-css1"
+            >CSS 1 (matrix(...))</button>
+            <button
+              class="cursor-pointer bg-white hover:bg-indigo-50 px-2 py-1 rounded b-2 b-solid b-slate-500"
+              id="select-mycss-style-css2"
+            >CSS 2 (translate ...)</button>
+          </div>
         </div>
 
       </div>
