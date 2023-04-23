@@ -1,6 +1,6 @@
 import { calculateFit, loadImage } from './utils/utils';
 
-import POLAR_IMG_SRC from './images/cute-white-polar-bear.png'
+const POLAR_IMG_SRC = 'https://github.com/anniehastur450/fabricjs-touch-pinch-demo/blob/main/images/cute-white-polar-bear.png?raw=true';
 import { FidgetPincher } from './FidgetPincher/FidgetPincher';
 let img: HTMLImageElement;
 

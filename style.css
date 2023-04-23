@@ -9,5 +9,5 @@ h1, h2 {
 .canvasbg {
   /* https://www.transparenttextures.com/subtle-grey.html */
   background-color: #210000;
-  background-image: url("/images/subtle-grey.png");
+  background-image: url("./images/subtle-grey.png");
 }
