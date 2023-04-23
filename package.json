@@ -2,5 +2,10 @@
   "name": "typescript",
   "version": "0.0.0",
   "private": true,
-  "dependencies": {}
+  "scripts": {
+    "serve": "parcel index.html"
+  },
+  "devDependencies": {
+    "parcel": "^2.8.3"
+  }
 }
