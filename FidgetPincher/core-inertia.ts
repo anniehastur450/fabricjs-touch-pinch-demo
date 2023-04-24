@@ -1,16 +1,19 @@
+import { TransformationMatrix } from './TransformationMatrix';
 import { Pinch } from './core-math';
 
 interface InertiaOptions {
   minimumTime: number;
   minimumSnapshots: number;
   brakingTime: number;
+  maximumPinchReleaseTime: number; // maximum time between 2 touches to be considered as pinch release
 }
 
 function defaultOptions(): InertiaOptions {
   return {
     minimumTime: 100,
     minimumSnapshots: 3,
-    brakingTime: 1000
+    brakingTime: 1000,
+    maximumPinchReleaseTime: 300
   }
 }
 
@@ -204,4 +207,103 @@ export function applyFidgetSpinInertia(
       callback(rotation, scale);
     }
   );
+}
+
+//
+
+export interface PinchInertia {
+  angularVelocity: number;
+  scalingConstant: number;
+  transformOrigin: { x: number, y: number } | null;
+  velocityX: number;
+  velocityY: number;
+}
+
+export function calculatePinchInertia(
+  pinchHistory: PinchSnapshot[],
+  options?: InertiaOptions
+): PinchInertia | null {
+  options = completeOptions(options);
+
+  if (pinchHistory.length < options.minimumSnapshots) {
+    return null;
+  }
+  const inertia = calculateInertia(
+    pinchHistory.map(s => ({ deltas: [], dt: s.dt })),
+    options
+  );
+  // calculate transform of last [count] pinch
+  let transform = TransformationMatrix.identity();
+  for (const snapshot of pinchHistory.slice(-inertia.count)) {
+    const { dx, dy, scale, rotation, prevCentroid } = snapshot.pinch;
+    const actions = [
+      TransformationMatrix.translation(-prevCentroid.x, -prevCentroid.y),
+      TransformationMatrix.rotation(rotation),
+      TransformationMatrix.scale(scale, scale),
+      TransformationMatrix.translation(dx, dy),
+      TransformationMatrix.translation(prevCentroid.x, prevCentroid.y)
+    ];
+    for (const action of actions) {
+      transform = action.multiplyMatrix(transform);
+    }
+  }
+
+  const { translateX, translateY, scale, rotate } = transform.decompose();
+  const angularVelocity = rotate / inertia.time;
+  const scalingConstant = Math.pow(scale, 1 / inertia.time);
+  const transformOrigin = transform.calculateTransformOrigin();
+  const velocityX = translateX / inertia.time;
+  const velocityY = translateY / inertia.time;
+
+  return {
+    angularVelocity,
+    scalingConstant,
+    transformOrigin,
+    velocityX,
+    velocityY
+  };
+}
+
+export function applyPinchInertia(
+  inertia: PinchInertia,
+  callback: (transform: TransformationMatrix) => void,
+  options?: InertiaOptions
+): InertiaApplyResult {
+  if (inertia.transformOrigin === null) {
+    return applyTranslateInertia(
+      { vx: inertia.velocityX, vy: inertia.velocityY },
+      (dx, dy) => {
+        callback(TransformationMatrix.translation(dx, dy));
+      },
+      options
+    );
+  }
+  options = completeOptions(options);
+  const { x, y } = inertia.transformOrigin;
+  let r = 0;
+  let s = 1;
+  return applyInertia(options,
+    ({ mappedTime }) => {
+      const rotation = inertia.angularVelocity * mappedTime - r;
+      const scale = Math.pow(inertia.scalingConstant, mappedTime) / s;
+      r += rotation;
+      s *= scale;
+      const actions = [
+        TransformationMatrix.translation(-x, -y),
+        TransformationMatrix.rotation(rotation),
+        TransformationMatrix.scale(scale, scale),
+        TransformationMatrix.translation(x, y),
+      ];
+      let transform = TransformationMatrix.identity();
+      for (const action of actions) {
+        transform = action.multiplyMatrix(transform);
+      }
+      callback(transform);
+    }
+  );
+}
+
+export function isPinchRelease(time: number, options?: InertiaOptions): boolean {
+  options = completeOptions(options);
+  return time < options.maximumPinchReleaseTime;
 }

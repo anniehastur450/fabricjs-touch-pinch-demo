@@ -22,6 +22,12 @@ function defaultOptions(): FidgetPincherOptions {
     enableTranslateInertia: true,
     enableFidgetSpinInertia: true,
     enablePinchInertia: true,
+    stopTranslateInertiaOnTouch: true,
+    stopFidgetSpinInertiaOnPinch: true,
+    stopFidgetSpinInertiaOnTouch: true,
+    stopPinchInertiaOnPinch: true,
+    stopPinchInertiaOnTouch: true,
+    stopFidgetSpinInertiaOnPinchInertia: true,
   }
 }
 

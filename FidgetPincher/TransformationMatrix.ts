@@ -17,6 +17,21 @@ function multiplyMatrices(a: Array9, b: Array9): Array9 {
   ];
 }
 
+// solve linear system of equations with 2 unknowns
+function solveLinearSystem(
+  a: number, b: number, c: number,
+  d: number, e: number, f: number,
+): [number, number] | null {
+  const det = a * e - b * d;
+  if (det === 0) {
+    return null;
+  }
+  return [
+    (c * e - b * f) / det,
+    (a * f - c * d) / det,
+  ];
+}
+
 export class TransformationMatrix {
   static identity(): TransformationMatrix {
     return new TransformationMatrix(1, 0, 0, 1, 0, 0);
@@ -78,5 +93,22 @@ export class TransformationMatrix {
   toCSSDecomposed() {
     const { translateX, translateY, scale, rotate } = this.decompose();
     return `translate(${translateX}px, ${translateY}px) rotate(${rotate}rad) scale(${scale})`;
+  }
+
+  /**
+   * solve [ax + cy + e] = [x]
+   *       [bx + dy + f] = [y]
+   */
+  calculateTransformOrigin(): { x: number, y: number } | null {
+    const { a, b, c, d, e, f } = this;
+    const result = solveLinearSystem(
+      a - 1, c, -e,
+      b, d - 1, -f,
+    );
+    if (result === null) {
+      return null;
+    }
+    const [x, y] = result;
+    return { x, y };
   }
 }

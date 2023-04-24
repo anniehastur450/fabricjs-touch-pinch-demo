@@ -1,5 +1,5 @@
 import { TransformationMatrix } from './TransformationMatrix';
-import { InertiaApplyResult, PinchSnapshot, TranslationSnapshot, applyFidgetSpinInertia, applyTranslateInertia, calculateFidgetSpinInertia, calculateTranslateInertia } from './core-inertia';
+import { InertiaApplyResult, PinchSnapshot, TranslationSnapshot, applyFidgetSpinInertia, applyPinchInertia, applyTranslateInertia, calculateFidgetSpinInertia, calculatePinchInertia, calculateTranslateInertia, isPinchRelease } from './core-inertia';
 import { Pinch, calculatePinch } from './core-math';
 
 export interface FidgetPincherOptions {
@@ -7,6 +7,12 @@ export interface FidgetPincherOptions {
   enableTranslateInertia: boolean; // inertia when touches from 1 to 0
   enableFidgetSpinInertia: boolean; // inertia when touches from 2 to 1
   enablePinchInertia: boolean; // inertia when touches from 2 to 0
+  stopTranslateInertiaOnTouch: boolean; // stop translate inertia when touches from 0 to 1
+  stopFidgetSpinInertiaOnPinch: boolean; // stop fidget spin inertia when touches from 1 to 2
+  stopFidgetSpinInertiaOnTouch: boolean; // stop fidget spin inertia when touches from 0 to 1
+  stopPinchInertiaOnPinch: boolean; // stop pinch inertia when touches from 1 to 2
+  stopPinchInertiaOnTouch: boolean; // stop pinch inertia when touches from 0 to 1
+  stopFidgetSpinInertiaOnPinchInertia: boolean; // stop fidget spin inertia when pinch inertia is applied
 }
 
 interface GetSet<T> {
@@ -21,6 +27,8 @@ class ImplInertia {
   private pinches: PinchSnapshot[] = [];
   private fidgetSpinApplyResult: InertiaApplyResult | null = null;
   private fidgetSpinPivot: { x: number, y: number } = { x: 0, y: 0 };
+  private pinchApplyResult: InertiaApplyResult | null = null;
+  private pinchReleaseTimestamp: number = 0;
 
   constructor(
     private options: FidgetPincherOptions,
@@ -33,12 +41,28 @@ class ImplInertia {
   onStart(touches: number, t: number) {
     this.translations = [];
     if (touches === 1) {
-      this.translationApplyResult?.stop();
-      this.translationApplyResult = null;
+      if (this.options.stopTranslateInertiaOnTouch) {
+        this.translationApplyResult?.stop();
+        this.translationApplyResult = null;
+      }
+      if (this.options.stopFidgetSpinInertiaOnTouch) {
+        this.fidgetSpinApplyResult?.stop();
+        this.fidgetSpinApplyResult = null;
+      }
+      if (this.options.stopPinchInertiaOnTouch) {
+        this.pinchApplyResult?.stop();
+        this.pinchApplyResult = null;
+      }
     } else if (touches === 2) {
       this.pinches = [];
-      this.fidgetSpinApplyResult?.stop();
-      this.fidgetSpinApplyResult = null;
+      if (this.options.stopFidgetSpinInertiaOnPinch) {
+        this.fidgetSpinApplyResult?.stop();
+        this.fidgetSpinApplyResult = null;
+      }
+      if (this.options.stopPinchInertiaOnPinch) {
+        this.pinchApplyResult?.stop();
+        this.pinchApplyResult = null;
+      }
     }
     this.t = t;
   }
@@ -62,6 +86,28 @@ class ImplInertia {
   onEnd(touches: number) {
     if (!this.options.enableInertia) {
       return;
+    }
+    if (touches === 1) {
+      this.pinchReleaseTimestamp = this.t;
+    }
+    if (touches === 0 && this.options.enablePinchInertia) {
+      if (isPinchRelease(this.t - this.pinchReleaseTimestamp)) {
+        this.pinchReleaseTimestamp = 0;
+        if (this.options.stopFidgetSpinInertiaOnPinchInertia) {
+          this.fidgetSpinApplyResult?.stop();
+          this.fidgetSpinApplyResult = null;
+        }
+        const inertia = calculatePinchInertia(this.pinches);
+        if (inertia) {
+          const result = applyPinchInertia(inertia, (action) => {
+            let transform = this.transform.get();
+            transform = action.multiplyMatrix(transform);
+            this.transform.set(transform);
+          });
+          this.pinchApplyResult = result;
+        }
+        return;
+      }
     }
     if (touches === 0 && this.options.enableTranslateInertia) {
       const inertia = calculateTranslateInertia(this.translations);
