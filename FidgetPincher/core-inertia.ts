@@ -1,3 +1,4 @@
+import { Pinch } from './core-math';
 
 interface InertiaOptions {
   minimumTime: number;
@@ -28,6 +29,7 @@ interface Snapshot {
 interface SnapshotInertia {
   velocities: number[];
   time: number;
+  count: number;
 }
 
 function calculateInertia(history: Snapshot[], options: InertiaOptions): SnapshotInertia {
@@ -50,8 +52,52 @@ function calculateInertia(history: Snapshot[], options: InertiaOptions): Snapsho
   }
   return {
     velocities: deltas.map(d => d / dt),
-    time: dt
+    time: dt,
+    count
   };
+}
+
+export interface InertiaApplyResult {
+  isRunning(): boolean;
+  stop(): void;
+}
+
+interface InertiaApplyCallbackDetails {
+  mappedTime: number; // normal time is mapped to simulate deceleration effect
+}
+
+function applyInertia(
+  options: InertiaOptions,
+  callback: (details: InertiaApplyCallbackDetails) => void
+): InertiaApplyResult {
+  const { brakingTime } = options;
+  const start = performance.now();
+
+  let running = true;
+  let task = requestAnimationFrame(animate);
+
+  function animate(now: number) {
+    if (!running) {
+      return;
+    }
+    const elapsed = now - start;
+    const dt = Math.min(elapsed, brakingTime);
+    const mappedTime = dt * (1 - dt / (2 * brakingTime));
+    callback({ mappedTime });
+    if (elapsed < brakingTime) {
+      task = requestAnimationFrame(animate);
+    } else {
+      running = false;
+    }
+  }
+
+  return {
+    isRunning: () => running,
+    stop: () => {
+      running = false;
+      cancelAnimationFrame(task);
+    }
+  }
 }
 
 //
@@ -84,50 +130,78 @@ export function calculateTranslateInertia(
   return { vx, vy };
 }
 
-export interface InertiaApplyResult {
-  isRunning(): boolean;
-  stop(): void;
-}
-
 export function applyTranslateInertia(
   inertia: TranslationInertia,
   callback: (dx: number, dy: number) => void,
   options?: InertiaOptions
 ): InertiaApplyResult {
   options = completeOptions(options);
-  const { brakingTime } = options;
-  const start = performance.now();
-  function factor(t: number) {
-    const elapsed = t - start;
-    return elapsed > brakingTime ? 0 : 1 - elapsed / brakingTime;
-  }
-
-  let running = true;
-  let t = start;
-  let task = requestAnimationFrame(animate);
-
-  function animate(now: number) {
-    if (!running) {
-      return;
+  let sx = 0;
+  let sy = 0;
+  return applyInertia(options,
+    ({ mappedTime }) => {
+      const dx = inertia.vx * mappedTime - sx;
+      const dy = inertia.vy * mappedTime - sy;
+      sx += dx;
+      sy += dy;
+      callback(dx, dy);
     }
-    const dt = now - t;
-    t = now;
-    const f = factor(now);
-    const dx = inertia.vx * dt * f;
-    const dy = inertia.vy * dt * f;
-    callback(dx, dy);
-    if (f > 0) {
-      task = requestAnimationFrame(animate);
-    } else {
-      running = false;
-    }
-  }
+  );
+}
 
-  return {
-    isRunning: () => running,
-    stop: () => {
-      running = false;
-      cancelAnimationFrame(task);
-    }
+//
+
+export interface PinchSnapshot {
+  pinch: Pinch;
+  dt: number;
+}
+
+export interface FidgetSpinInertia {
+  angularVelocity: number;
+  scalingConstant: number;
+}
+
+export function calculateFidgetSpinInertia(
+  pinchHistory: PinchSnapshot[],
+  options?: InertiaOptions
+): FidgetSpinInertia | null {
+  options = completeOptions(options);
+
+  if (pinchHistory.length < options.minimumSnapshots) {
+    return null;
   }
+  const inertia = calculateInertia(
+    pinchHistory.map(s => ({ deltas: [s.pinch.rotation], dt: s.dt })),
+    options
+  );
+  const [angularVelocity] = inertia.velocities;
+  // calculate product of last [count] scales
+  const scaleProduct = pinchHistory
+    .slice(-inertia.count)
+    .map(s => s.pinch.scale)
+    .reduce((a, b) => a * b, 1);
+  // calculate scaling constant
+  // scale(t) = scalingConstant ^ t
+  const scalingConstant = Math.pow(scaleProduct, 1 / inertia.time);
+
+  return { angularVelocity, scalingConstant };
+}
+
+export function applyFidgetSpinInertia(
+  inertia: FidgetSpinInertia,
+  callback: (rotation: number, scale: number) => void,
+  options?: InertiaOptions
+): InertiaApplyResult {
+  options = completeOptions(options);
+  let r = 0;
+  let s = 1;
+  return applyInertia(options,
+    ({ mappedTime }) => {
+      const rotation = inertia.angularVelocity * mappedTime - r;
+      const scale = Math.pow(inertia.scalingConstant, mappedTime) / s;
+      r += rotation;
+      s *= scale;
+      callback(rotation, scale);
+    }
+  );
 }
