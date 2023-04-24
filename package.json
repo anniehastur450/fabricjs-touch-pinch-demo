@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "serve": "parcel index.html"
+    "serve": "parcel index.html --no-hmr"
   },
   "devDependencies": {
     "nodemon": "^2.0.22",

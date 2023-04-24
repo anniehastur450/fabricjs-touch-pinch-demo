@@ -4,7 +4,7 @@ interface Point {
   y: number;
 }
 
-interface Pinch {
+export interface Pinch {
   dx: number;
   dy: number;
   scale: number;

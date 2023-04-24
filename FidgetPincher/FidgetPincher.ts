@@ -19,7 +19,15 @@ interface TouchElementEvents {
 function defaultOptions(): FidgetPincherOptions {
   return {
     enableInertia: true,
+    enableTranslateInertia: true,
     enableFidgetSpinInertia: true,
+    enablePinchInertia: true,
+    stopTranslateInertiaOnTouch: true,
+    stopFidgetSpinInertiaOnPinch: true,
+    stopFidgetSpinInertiaOnTouch: true,
+    stopPinchInertiaOnPinch: true,
+    stopPinchInertiaOnTouch: true,
+    stopFidgetSpinInertiaOnPinchInertia: true,
   }
 }
 
