@@ -19,12 +19,12 @@
   <div id="app"></div>
 
   <div class="flex flex-col overflow-hidden gap-2 sm:flex-row sm:gap-4">
-    <div class="sm:w-1/2">
+    <div class="sm:w-1/2 shrink-0">
       <!-- canvas -->
       <div
         class="b b-solid b-black overflow-hidden
           w-full aspect-[3/4]
-          sm:aspect-[2/1]
+          sm:aspect-[2/1] select-none
         "
         id="mycanvas-container"
       >
@@ -38,7 +38,7 @@
       <div
         class="cssbg b b-solid b-amber-700 overflow-hidden
           w-full aspect-[3/4]
-          sm:aspect-[2/1]
+          sm:aspect-[2/1] select-none
         "
         style="display: none;"
         id="mycss-container"
@@ -55,7 +55,7 @@
       <div
         class="fabricbg b b-solid b-indigo-700 overflow-hidden
           w-full aspect-[3/4]
-          sm:aspect-[2/1]
+          sm:aspect-[2/1] select-none
           relative
         "
         style="display: none;"

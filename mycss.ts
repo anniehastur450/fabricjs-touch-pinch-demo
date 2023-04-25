@@ -1,12 +1,11 @@
 import { calculateFit, loadImage } from './utils/utils';
 
 import { FidgetPincher } from './FidgetPincher/FidgetPincher';
-import { addStateChangedCallback, getState } from './index';
+import { addStateChangedCallback, getState } from './state';
 
 const myCssContainer = document.getElementById('mycss-container') as HTMLDivElement;
 const myCss = document.getElementById('mycss') as HTMLDivElement;
 const fidgetPincher = new FidgetPincher();
-let myCssStyle: 'css1' | 'css2' = 'css1';
 
 function diagnosticPrint() {
   const css1 = document.getElementById('details-css1') as HTMLDivElement;
@@ -16,6 +15,7 @@ function diagnosticPrint() {
 }
 
 function repaint() {
+  const { myCssStyle } = getState();
   if (myCssStyle === 'css1') {
     myCss.style.transform = fidgetPincher.getTransform().toCSSMatrix();
   } else if (myCssStyle === 'css2') {
@@ -43,11 +43,8 @@ async function onInit() {
 }
 onInit();
 
-window.addEventListener('load', (e) => {
-  myCssStyle = getState().myCssStyle;
-  repaint();
-  addStateChangedCallback((state) => {
-    myCssStyle = state.myCssStyle;
+addStateChangedCallback((state) => {
+  if (state.selectDemo === 'css') {
     repaint();
-  });
+  }
 });

@@ -53,6 +53,14 @@ function getCanvasCenter() {
 
 const myFabricContainer = document.getElementById('myfabric-container') as HTMLDivElement;
 const fidgetPincher = new FidgetPincher();
+let accumulatedTransform = TransformationMatrix.identity(); // for print diagnostic info
+
+function diagnosticPrint() {
+  const css1 = document.getElementById('details-css1') as HTMLDivElement;
+  const css2 = document.getElementById('details-css2') as HTMLDivElement;
+  css1.innerText = `transform: ${accumulatedTransform.toCSSMatrix()};`;
+  css2.innerText = `transform: ${accumulatedTransform.toCSSDecomposed()};`;
+}
 
 function repaint() {
   const transform = fidgetPincher.getTransform();
@@ -64,6 +72,9 @@ function repaint() {
     defaultObjectTransformationMatrix,
     defaultObjectTransformationMatrixSetter,
   );
+  // print diagnostic info to page
+  accumulatedTransform = accumulatedTransform.multiplyMatrix(transform);
+  diagnosticPrint();
   // reset transform to identity for delta transform
   fidgetPincher.setTransform(TransformationMatrix.identity());
 };
