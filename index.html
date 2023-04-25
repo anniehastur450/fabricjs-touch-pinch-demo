@@ -19,12 +19,12 @@
   <div id="app"></div>
 
   <div class="flex flex-col overflow-hidden gap-2 sm:flex-row sm:gap-4">
-    <div class="sm:w-1/2">
+    <div class="sm:w-1/2 shrink-0">
       <!-- canvas -->
       <div
         class="b b-solid b-black overflow-hidden
           w-full aspect-[3/4]
-          sm:aspect-[2/1]
+          sm:aspect-[2/1] select-none
         "
         id="mycanvas-container"
       >
@@ -38,7 +38,7 @@
       <div
         class="cssbg b b-solid b-amber-700 overflow-hidden
           w-full aspect-[3/4]
-          sm:aspect-[2/1]
+          sm:aspect-[2/1] select-none
         "
         style="display: none;"
         id="mycss-container"
@@ -53,13 +53,26 @@
 
       <!-- fabricjs -->
       <div
-        class="b b-solid b-indigo-700 overflow-hidden
+        class="fabricbg b b-solid b-indigo-700 overflow-hidden
           w-full aspect-[3/4]
-          sm:aspect-[2/1]
+          sm:aspect-[2/1] select-none
+          relative
         "
         style="display: none;"
         id="myfabric-container"
       >
+        <div
+          class="w-full h-full flex justify-center items-center"
+          >
+          <canvas
+            class="b b-solid b-white"
+            id="myfabric"
+          ></canvas>
+          <div
+            class="absolute top-0 left-0 w-full h-full"
+            id="myfabric-touch-controls"
+          ></div>
+        </div>
       </div>
 
       <div class="mt-2">
@@ -124,6 +137,27 @@
               class="cursor-pointer bg-white hover:bg-indigo-50 px-2 py-1 rounded b-2 b-solid b-slate-500"
               id="select-mycss-style-css2"
             >CSS 2 (translate ...)</button>
+          </div>
+        </div>
+
+        <div class="mt-2" id="select-myfabric-touch-container">
+          <div class="text-xs text-gray-500 mb-4">
+            Currently myfabric demo canvas size is fixed (300x300),
+            <br> you can easily change it to match parent container size by ResizeObserver.
+            <br> (reference to mycanvas and mycss code for how to do it)
+          </div>
+          <div class="text-xs text-gray-500 mb-1">
+            Select fabricjs touch pinch
+          </div>
+          <div class="flex gap-2">
+            <button
+              class="cursor-pointer bg-white hover:bg-indigo-50 px-2 py-1 rounded b-2 b-solid b-slate-500"
+              id="select-myfabric-touch-enabled"
+            >Enabled (overwrite)</button>
+            <button
+              class="cursor-pointer bg-white hover:bg-indigo-50 px-2 py-1 rounded b-2 b-solid b-slate-500"
+              id="select-myfabric-touch-disabled"
+            >Disabled</button>
           </div>
         </div>
 

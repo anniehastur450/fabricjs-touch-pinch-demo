@@ -21,3 +21,9 @@ h1, h2 {
   background-color: #117000;
   background-image: url("./images/subtle-grey.png");
 }
+
+.fabricbg {
+  /* https://www.transparenttextures.com/subtle-grey.html */
+  background-color: #003682;
+  background-image: url("./images/subtle-grey.png");
+}

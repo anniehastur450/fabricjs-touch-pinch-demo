@@ -79,9 +79,9 @@ export class FidgetPincher {
     return this.impl.transform;
   }
 
+  // won't trigger onTransformed callback
   setTransform(transform: TransformationMatrix) {
     this.impl.transform = transform;
-    this.impl.notifyTransformed();
   }
 
   // call this function when browser default touch events should interrupt the operation
