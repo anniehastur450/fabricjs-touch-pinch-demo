@@ -51,7 +51,8 @@ function getCanvasCenter() {
 
 // below assumed every object this transform origin is its top-left corner (the default of fabricjs)
 
-const myFabricContainer = document.getElementById('myfabric-container') as HTMLDivElement;
+// const myFabricContainer = document.getElementById('myfabric-container') as HTMLDivElement;
+const myFabricTouchControls = document.getElementById('myfabric-touch-controls') as HTMLDivElement;
 const fidgetPincher = new FidgetPincher();
 let accumulatedTransform = TransformationMatrix.identity(); // for print diagnostic info
 
@@ -79,8 +80,8 @@ function repaint() {
   fidgetPincher.setTransform(TransformationMatrix.identity());
 };
 
-myFabricContainer.style.touchAction = 'none';
-fidgetPincher.setTouchElement(myFabricContainer, {
+myFabricTouchControls.style.touchAction = 'none';
+fidgetPincher.setTouchElement(myFabricTouchControls, {
   onTransformed: (transform) => {
     repaint();
   }

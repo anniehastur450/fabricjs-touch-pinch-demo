@@ -5,6 +5,7 @@ interface State {
   showCss: boolean;
   selectDemo: 'canvas' | 'css' | 'fabric';
   myCssStyle: 'css1' | 'css2';
+  myFabricTouch: 'enabled' | 'disabled';
 }
 
 function defaultState(): State {
@@ -12,6 +13,7 @@ function defaultState(): State {
     showCss: true,
     selectDemo: 'canvas',
     myCssStyle: 'css1',
+    myFabricTouch: 'enabled',
   };
 }
 
@@ -102,6 +104,21 @@ const buttonGroups: ButtonGroup[] = [
       },
       css2: {
         button: document.getElementById('select-mycss-style-css2') as HTMLButtonElement,
+        targets: [],
+      },
+    }
+  },
+  {
+    name: 'myFabricTouch',
+    buttons: {
+      enabled: {
+        button: document.getElementById('select-myfabric-touch-enabled') as HTMLButtonElement,
+        targets: [
+          document.getElementById('myfabric-touch-controls') as HTMLDivElement,
+        ],
+      },
+      disabled: {
+        button: document.getElementById('select-myfabric-touch-disabled') as HTMLButtonElement,
         targets: [],
       },
     }
