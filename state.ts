@@ -84,13 +84,14 @@ const buttonGroups: ButtonGroup[] = [
         button: document.getElementById('select-mycss') as HTMLButtonElement,
         targets: [
           document.getElementById('mycss-container') as HTMLDivElement,
-          document.getElementById('select-mycss-style-container') as HTMLButtonElement,
+          document.getElementById('select-mycss-style-container') as HTMLDivElement,
         ],
       },
       fabric: {
         button: document.getElementById('select-myfabric') as HTMLButtonElement,
         targets: [
           document.getElementById('myfabric-container') as HTMLDivElement,
+          document.getElementById('select-myfabric-touch-container') as HTMLDivElement,
         ],
       }
     }
