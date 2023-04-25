@@ -1,11 +1,16 @@
 
 // ui state
 
+import { FidgetPincherOptions } from './FidgetPincher/core-impl';
+
 interface State {
   showCss: boolean;
   selectDemo: 'canvas' | 'css' | 'fabric';
   myCssStyle: 'css1' | 'css2';
   myFabricTouch: 'enabled' | 'disabled';
+  fidgetPincherOptions: {
+    [key: string]: boolean;
+  };
 }
 
 function defaultState(): State {
@@ -14,6 +19,7 @@ function defaultState(): State {
     selectDemo: 'canvas',
     myCssStyle: 'css1',
     myFabricTouch: 'enabled',
+    fidgetPincherOptions: {},
   };
 }
 
@@ -182,4 +188,51 @@ export function addStateChangedCallback(onStateChanged: (state: State) => void) 
 
 export function getState(): State {
   return state;
+}
+
+// setup fidget pincher options
+function defaultFidgetPincherOptions(): Partial<FidgetPincherOptions> {
+  return {
+    enableInertia: true,
+    enableTranslateInertia: true,
+    enableFidgetSpinInertia: true,
+    enablePinchInertia: true,
+  }
+}
+
+export function stateGetFidgetPincherOptions(): Partial<FidgetPincherOptions> {
+  return {
+    ...defaultFidgetPincherOptions(),
+    ...state.fidgetPincherOptions,
+  };
+}
+
+const fidgetPincherOptionsContainer = document.getElementById('fidget-pincher-options-container') as HTMLElement;
+for (const [key, value] of Object.entries(stateGetFidgetPincherOptions())) {
+  if (fidgetPincherOptionsContainer.children.length > 0) {
+    fidgetPincherOptionsContainer.appendChild(document.createElement('br'));
+  }
+  const label = document.createElement('label');
+  label.classList.add('bg-amber-200')
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.checked = value as boolean;
+  const span = document.createElement('span');
+  function updateSpan() {
+    label.classList.toggle('line-through', !checkbox.checked);
+    span.textContent = ` ${key}: ${checkbox.checked}, `;
+  }
+  updateSpan();
+
+  label.appendChild(checkbox);
+  label.appendChild(span);
+
+  checkbox.addEventListener('change', () => {
+    state.fidgetPincherOptions[key] = checkbox.checked;
+    updateSpan();
+    stateUpdated();
+  });
+
+  fidgetPincherOptionsContainer.appendChild(label);
+
 }

@@ -3,6 +3,7 @@ import { fabric } from 'fabric';
 import { FidgetPincher } from './FidgetPincher/FidgetPincher';
 import { TransformationMatrix } from './FidgetPincher/TransformationMatrix';
 import { defaultObjectTransformationMatrix, defaultObjectTransformationMatrixSetter, updateDeltaTransformToFabricJsAllObjects } from './fidget-pinch-fabricjs-adapter';
+import { stateGetFidgetPincherOptions } from './state';
 
 // Create a new canvas
 const canvas = new fabric.Canvas('myfabric', {
@@ -37,7 +38,7 @@ function getCanvasCenter() {
 
 // const myFabricContainer = document.getElementById('myfabric-container') as HTMLDivElement;
 const myFabricTouchControls = document.getElementById('myfabric-touch-controls') as HTMLDivElement;
-const fidgetPincher = new FidgetPincher();
+const fidgetPincher = new FidgetPincher(stateGetFidgetPincherOptions());
 let accumulatedTransform = TransformationMatrix.identity(); // for print diagnostic info
 
 function diagnosticPrint() {
