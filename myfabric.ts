@@ -6,38 +6,22 @@ import { defaultObjectTransformationMatrix, defaultObjectTransformationMatrixSet
 
 // Create a new canvas
 const canvas = new fabric.Canvas('myfabric', {
-  width: 600,
+  width: 300,
   height: 300
 });
 
-// Create a rectangle
-const rectangle = new fabric.Rect({
-  left: 100,
-  top: 100,
-  fill: 'red',
-  width: 100,
-  height: 100
-});
+// create four shapes with random sizes and colors
+var shape1 = new fabric.Rect({ width: 100, height: 100, fill: 'red' });
+var shape2 = new fabric.Circle({ radius: 50, fill: 'green' });
+var shape3 = new fabric.Triangle({ width: 80, height: 80, fill: 'blue' });
+var shape4 = new fabric.Rect({ width: 120, height: 80, fill: 'orange' });
+shape1.set({ left: 50, top: 50 });
+shape2.set({ left: 100, top: 100 });
+shape3.set({ left: 175, top: 50 });
+shape4.set({ left: 50, top: 175 });
 
-// Create a circle
-const circle = new fabric.Circle({
-  left: 250,
-  top: 100,
-  fill: 'green',
-  radius: 50
-});
-
-// Create a triangle
-const triangle = new fabric.Triangle({
-  left: 400,
-  top: 100,
-  fill: 'blue',
-  width: 100,
-  height: 100
-});
-
-// Add the shapes to the canvas
-canvas.add(rectangle, circle, triangle);
+// add the shapes to the canvas
+canvas.add(shape1, shape2, shape3, shape4);
 
 ////////////////////////////////////////////////////////////////////////////
 
