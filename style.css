@@ -13,11 +13,17 @@ h1, h2 {
 .canvasbg {
   /* https://www.transparenttextures.com/subtle-grey.html */
   background-color: #210000;
-  background-image: url("/images/subtle-grey.png");
+  background-image: url("./images/subtle-grey.png");
 }
 
 .cssbg {
   /* https://www.transparenttextures.com/subtle-grey.html */
   background-color: #117000;
-  background-image: url("/images/subtle-grey.png");
+  background-image: url("./images/subtle-grey.png");
+}
+
+.fabricbg {
+  /* https://www.transparenttextures.com/subtle-grey.html */
+  background-color: #003682;
+  background-image: url("./images/subtle-grey.png");
 }

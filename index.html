@@ -53,13 +53,22 @@
 
       <!-- fabricjs -->
       <div
-        class="b b-solid b-indigo-700 overflow-hidden
+        class="fabricbg b b-solid b-indigo-700 overflow-hidden
           w-full aspect-[3/4]
           sm:aspect-[2/1]
+          relative
         "
         style="display: none;"
         id="myfabric-container"
       >
+        <div
+          class="w-full h-full flex justify-center items-center"
+          >
+          <canvas
+            class="b b-solid b-black"
+            id="myfabric"
+          ></canvas>
+        </div>
       </div>
 
       <div class="mt-2">
