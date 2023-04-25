@@ -3,7 +3,7 @@ import { fabric } from 'fabric';
 import { FidgetPincher } from './FidgetPincher/FidgetPincher';
 import { TransformationMatrix } from './FidgetPincher/TransformationMatrix';
 import { defaultObjectTransformationMatrix, defaultObjectTransformationMatrixSetter, updateDeltaTransformToFabricJsAllObjects } from './fidget-pinch-fabricjs-adapter';
-import { stateGetFidgetPincherOptions } from './state';
+import { addStateFidgetPincherOptionsChangedCallback, stateGetFidgetPincherOptions } from './state';
 
 // Create a new canvas
 const canvas = new fabric.Canvas('myfabric', {
@@ -70,4 +70,8 @@ fidgetPincher.setTouchElement(myFabricTouchControls, {
   onTransformed: (transform) => {
     repaint();
   }
+});
+
+addStateFidgetPincherOptionsChangedCallback(() => {
+  fidgetPincher.setOptions(stateGetFidgetPincherOptions());
 });

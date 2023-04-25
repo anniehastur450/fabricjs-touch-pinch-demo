@@ -1,7 +1,7 @@
 import { calculateFit, loadImage } from './utils/utils';
 
 import { FidgetPincher } from './FidgetPincher/FidgetPincher';
-import { addStateChangedCallback, getState, stateGetFidgetPincherOptions } from './state';
+import { addStateChangedCallback, addStateFidgetPincherOptionsChangedCallback, getState, stateGetFidgetPincherOptions } from './state';
 
 const myCssContainer = document.getElementById('mycss-container') as HTMLDivElement;
 const myCss = document.getElementById('mycss') as HTMLDivElement;
@@ -47,4 +47,8 @@ addStateChangedCallback((state) => {
   if (state.selectDemo === 'css') {
     repaint();
   }
+});
+
+addStateFidgetPincherOptionsChangedCallback(() => {
+  fidgetPincher.setOptions(stateGetFidgetPincherOptions());
 });

@@ -200,6 +200,11 @@ function defaultFidgetPincherOptions(): Partial<FidgetPincherOptions> {
   }
 }
 
+const stateFidgetPincherOptionsChangedCallbacks: (() => void)[] = [];
+export function addStateFidgetPincherOptionsChangedCallback(onFidgetPincherOptionsChanged: () => void) {
+  stateFidgetPincherOptionsChangedCallbacks.push(onFidgetPincherOptionsChanged);
+}
+
 export function stateGetFidgetPincherOptions(): Partial<FidgetPincherOptions> {
   return {
     ...defaultFidgetPincherOptions(),
@@ -230,7 +235,13 @@ for (const [key, value] of Object.entries(stateGetFidgetPincherOptions())) {
   checkbox.addEventListener('change', () => {
     state.fidgetPincherOptions[key] = checkbox.checked;
     updateSpan();
-    stateUpdated();
+    for (const onFidgetPincherOptionsChanged of stateFidgetPincherOptionsChangedCallbacks) {
+      try {
+        onFidgetPincherOptionsChanged();
+      } catch (e) {
+        console.error(e);
+      }
+    }
   });
 
   fidgetPincherOptionsContainer.appendChild(label);

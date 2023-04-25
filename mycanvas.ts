@@ -2,7 +2,7 @@ import { calculateFit, loadImage } from './utils/utils';
 
 import POLAR_IMG_SRC from './images/cute-white-polar-bear.png'
 import { FidgetPincher } from './FidgetPincher/FidgetPincher';
-import { stateGetFidgetPincherOptions } from './state';
+import { addStateFidgetPincherOptionsChangedCallback, stateGetFidgetPincherOptions } from './state';
 let img: HTMLImageElement;
 
 const myCanvasContainer = document.getElementById('mycanvas-container') as HTMLDivElement;
@@ -63,3 +63,7 @@ async function onInit() {
   });
 }
 onInit();
+
+addStateFidgetPincherOptionsChangedCallback(() => {
+  fidgetPincher.setOptions(stateGetFidgetPincherOptions());
+});

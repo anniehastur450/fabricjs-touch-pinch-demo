@@ -45,6 +45,13 @@ export class FidgetPincher {
     this.pointerMap = new Map();
   }
 
+  setOptions(options: Partial<FidgetPincherOptions>) {
+    this.impl.setOptions({
+      ...defaultOptions(),
+      ...options
+    });
+  }
+
   private addPointer(id: TouchIdentifier, x: number, y: number, t: number) {
     const pointer = this.impl.addPointer(x, y, t);
     this.pointerMap.set(id, pointer);
