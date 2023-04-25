@@ -2,12 +2,13 @@ import { calculateFit, loadImage } from './utils/utils';
 
 const POLAR_IMG_SRC = 'https://github.com/anniehastur450/fabricjs-touch-pinch-demo/blob/main/images/cute-white-polar-bear.png?raw=true';
 import { FidgetPincher } from './FidgetPincher/FidgetPincher';
+import { addStateFidgetPincherOptionsChangedCallback, stateGetFidgetPincherOptions } from './state';
 let img: HTMLImageElement;
 
 const myCanvasContainer = document.getElementById('mycanvas-container') as HTMLDivElement;
 const myCanvas = document.getElementById('mycanvas') as HTMLCanvasElement;
 const ctx = myCanvas.getContext('2d')!;
-const fidgetPincher = new FidgetPincher();
+const fidgetPincher = new FidgetPincher(stateGetFidgetPincherOptions());
 
 function diagnosticPrint() {
   const css1 = document.getElementById('details-css1') as HTMLDivElement;
@@ -62,3 +63,7 @@ async function onInit() {
   });
 }
 onInit();
+
+addStateFidgetPincherOptionsChangedCallback(() => {
+  fidgetPincher.setOptions(stateGetFidgetPincherOptions());
+});

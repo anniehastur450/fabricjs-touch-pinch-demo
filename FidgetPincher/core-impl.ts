@@ -15,6 +15,10 @@ export interface FidgetPincherOptions {
   stopFidgetSpinInertiaOnPinchInertia: boolean; // stop fidget spin inertia when pinch inertia is applied
 }
 
+interface Get<T> {
+  get(): T;
+}
+
 interface GetSet<T> {
   get(): T;
   set(value: T): void;
@@ -29,9 +33,12 @@ class ImplInertia {
   private fidgetSpinPivot: { x: number, y: number } = { x: 0, y: 0 };
   private pinchApplyResult: InertiaApplyResult | null = null;
   private pinchReleaseTimestamp: number = 0;
+  private get options(): FidgetPincherOptions {
+    return this.optionsGetter.get();
+  }
 
   constructor(
-    private options: FidgetPincherOptions,
+    private optionsGetter: Get<FidgetPincherOptions>,
     private transform: GetSet<TransformationMatrix>,
     private __owner: Impl, // temp for fidget spin
   ) {
@@ -211,7 +218,9 @@ export class Impl {
     this.pointers = [];
     this.transform = TransformationMatrix.identity();
     this.inertia = new ImplInertia(
-      options,
+      {
+        get: () => this.options,
+      },
       {
         get: () => this.transform,
         set: (value) => {
@@ -221,6 +230,10 @@ export class Impl {
       },
       this
     );
+  }
+
+  setOptions(options: FidgetPincherOptions) {
+    this.options = options;
   }
 
   // corresponding to mousedown or touchstart
